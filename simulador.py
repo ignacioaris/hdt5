@@ -57,3 +57,12 @@ for cantidad in cantidades_procesos:
     promedio, desviacion = simulacion(cantidad, INTERVALO_LLEGADA_PROCESOS)
     promedios.append(promedio)
     desviaciones.append(desviacion)
+
+# Generar gráficas de los resultados
+plt.figure(figsize=(10, 5))
+plt.errorbar(cantidades_procesos, promedios, yerr=desviaciones, fmt='-o', color='b', ecolor='r', capsize=5)
+plt.title('Tiempo promedio de procesamiento vs. Número de procesos')
+plt.xlabel('Número de Procesos')
+plt.ylabel('Tiempo Promedio de Procesamiento (unidades de tiempo)')
+plt.grid(True)
+plt.show()
