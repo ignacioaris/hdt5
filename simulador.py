@@ -34,3 +34,26 @@ def proceso(env, nombre, ram, cpu, tiempos):
     tiempo_final = env.now
     tiempos.append(tiempo_final - tiempo_inicio)
     print(f'[{env.now:.2f}] {nombre} liberó {memoria_requerida} unidades de RAM y terminó.')
+
+def setup(env, num_procesos, ram_capacidad, cpu_capacidad, intervalo, tiempos):
+    ram = simpy.Container(env, init=ram_capacidad, capacity=ram_capacidad)
+    cpu = simpy.Resource(env, capacity=cpu_capacidad)
+    for i in range(num_procesos):
+        env.process(proceso(env, f'Proceso-{i}', ram, cpu, tiempos))
+
+def simulacion(num_procesos, intervalo):
+    env = simpy.Environment()
+    tiempos = []
+    setup(env, num_procesos, MEMORIA_TOTAL, 2, intervalo, tiempos)
+    env.run()  # Ejecutar hasta que todos los procesos terminen
+    return np.mean(tiempos), np.std(tiempos)
+
+# Recoger datos de simulación para diferentes cargas
+cantidades_procesos = [25, 50, 100, 150, 200]
+promedios = []
+desviaciones = []
+
+for cantidad in cantidades_procesos:
+    promedio, desviacion = simulacion(cantidad, INTERVALO_LLEGADA_PROCESOS)
+    promedios.append(promedio)
+    desviaciones.append(desviacion)
